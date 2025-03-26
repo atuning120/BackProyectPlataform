@@ -21,6 +21,21 @@ router.post("/", async (req, res) => {
   }
 });
 
+router.delete("/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deletedPatient = await Patient.findByIdAndDelete(id);
+    if (!deletedPatient) {
+      return res.status(404).json({ message: "Paciente no encontrado" });
+    }
+    res.status(200).json({ message: "Paciente eliminado exitosamente" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error eliminando el paciente" });
+  }
+});
+
+
 router.get("/", async (req, res) => {
   try {
     const patients = await Patient.find();
