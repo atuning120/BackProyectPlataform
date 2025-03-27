@@ -17,6 +17,7 @@ mongoose
 
 // Routes
 app.use("/api/patients", require("./routes/patients"));
+app.use("/api/clinical-records", require("./routes/clinicalRecords"));
 
 // Server port
 const PORT = process.env.PORT || 5000;
