@@ -3,6 +3,7 @@ const Patient = require("../models/Patient");
 const ClinicalRecord = require("../models/ClinicalRecord");
 const router = express.Router();
 
+// Obtener todas las fichas clínicas
 router.get("/", async (req, res) => {
   try {
     const clinicalRecords = await ClinicalRecord.find();
@@ -13,28 +14,21 @@ router.get("/", async (req, res) => {
   }
 });
 
+// Crear una nueva ficha clínica
 router.post("/", async (req, res) => {
   const { patientRun, content } = req.body;
 
-  // Verifica que patientRun no esté vacío
-  if (!patientRun) {
-    return res.status(400).json({ message: "El campo 'patientRun' es obligatorio." });
-  }
-
   try {
-    // Intenta buscar el paciente en la base de datos
     const patient = await Patient.findOne({ run: patientRun });
     if (!patient) {
-      // Si el paciente no se encuentra, devolver un 404
       return res.status(404).json({ message: "Paciente no encontrado con el RUN proporcionado." });
     }
 
-    // Si el paciente existe, crea la ficha clínica
-    const clinicalRecord = new ClinicalRecord({
-      patientRun,
-      content,
-    });
+    // Generar el siguiente número de ficha clínica
+    const lastRecord = await ClinicalRecord.findOne().sort({ clinicalRecordNumber: -1 });
+    const nextClinicalRecordNumber = lastRecord ? lastRecord.clinicalRecordNumber + 1 : 1;
 
+    const clinicalRecord = new ClinicalRecord({ clinicalRecordNumber: nextClinicalRecordNumber, patientRun, content });
     await clinicalRecord.save();
     res.status(201).json(clinicalRecord);
   } catch (err) {
@@ -43,6 +37,7 @@ router.post("/", async (req, res) => {
   }
 });
 
+// Eliminar una ficha clínica
 router.delete("/:id", async (req, res) => {
   try {
     const { id } = req.params;

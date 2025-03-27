@@ -2,17 +2,19 @@ const mongoose = require("mongoose");
 
 const clinicalRecordSchema = new mongoose.Schema(
   {
+    clinicalRecordNumber: {
+      type: Number,
+      unique: true,
+    },
     patientRun: {
       type: String,
-      required: true,
-      ref: "Patient", // Se relaciona con el modelo Patient
+      ref: "Patient",
     },
     content: {
       type: String,
-      required: true,
     },
   },
-  { timestamps: true } // Agrega timestamps de creación y actualización
+  { timestamps: true }
 );
 
 const ClinicalRecord = mongoose.model("ClinicalRecord", clinicalRecordSchema);
