@@ -43,4 +43,18 @@ router.post("/", async (req, res) => {
   }
 });
 
+router.delete("/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deletedRecord = await ClinicalRecord.findByIdAndDelete(id);
+    if (!deletedRecord) {
+      return res.status(404).json({ message: "Ficha clínica no encontrada." });
+    }
+    res.status(200).json({ message: "Ficha clínica eliminada exitosamente." });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error eliminando la ficha clínica." });
+  }
+});
+
 module.exports = router;
