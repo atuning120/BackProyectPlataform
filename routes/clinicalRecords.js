@@ -15,6 +15,26 @@ router.get("/", async (req, res) => {
   }
 });
 
+// Obtener una ficha clínica por su número de ficha
+router.get("/:clinicalRecordNumber", async (req, res) => {
+  const { clinicalRecordNumber } = req.params; // Obtener el clinicalRecordNumber del parámetro de la URL
+
+  try {
+    // Buscar la ficha clínica por su clinicalRecordNumber
+    const clinicalRecord = await ClinicalRecord.findOne({ clinicalRecordNumber });
+
+    if (!clinicalRecord) {
+      return res.status(404).json({ message: "Ficha clínica no encontrada." });
+    }
+
+    // Si existe, devolverla
+    res.status(200).json(clinicalRecord);
+  } catch (error) {
+    console.error("Error obteniendo la ficha clínica:", error);
+    res.status(500).json({ message: "Error al obtener la ficha clínica.", error: error.message });
+  }
+});
+
 // Crear una nueva ficha clínica
 router.post("/", async (req, res) => {
   const { patientRun, content } = req.body;
