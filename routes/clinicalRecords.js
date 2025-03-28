@@ -1,6 +1,7 @@
 const express = require("express");
 const Patient = require("../models/Patient");
 const ClinicalRecord = require("../models/ClinicalRecord");
+const AnsweredClinicalRecord = require("../models/AnsweredClinicalRecord")
 const router = express.Router();
 
 // Obtener todas las fichas clínicas
@@ -41,6 +42,18 @@ router.post("/", async (req, res) => {
 router.delete("/:id", async (req, res) => {
   try {
     const { id } = req.params;
+
+    // Verificar si la ficha clínica tiene respuestas asociadas
+    const clinicalRecord = await ClinicalRecord.findById(id); // Buscar la ficha clínica por su _id
+    if (!clinicalRecord) {
+      return res.status(404).json({ message: "Ficha clínica no encontrada." });
+    }
+
+    const answeredRecords = await AnsweredClinicalRecord.find({ clinicalRecordNumber: clinicalRecord.clinicalRecordNumber }); // Buscar las respuestas asociadas usando 'clinicalRecordNumber'
+    if (answeredRecords.length > 0) {
+      return res.status(400).json({ message: "No se puede eliminar la ficha clínica porque tiene respuestas asociadas." });
+    }
+
     const deletedRecord = await ClinicalRecord.findByIdAndDelete(id);
     if (!deletedRecord) {
       return res.status(404).json({ message: "Ficha clínica no encontrada." });
