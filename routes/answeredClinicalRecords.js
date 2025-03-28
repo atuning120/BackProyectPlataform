@@ -54,4 +54,29 @@ router.put("/:id", async (req, res) => {
     }
 });  
 
+  // Guardar una nueva respuesta de ficha clínica
+router.post("/", async (req, res) => {
+  try {
+    const { clinicalRecordNumber, email, answer } = req.body;
+
+    if (!clinicalRecordNumber || !email || !answer) {
+      return res.status(400).json({ message: "Faltan datos obligatorios" });
+    }
+
+    const newAnsweredRecord = new AnsweredClinicalRecord({
+      clinicalRecordNumber,
+      email,
+      answer,
+    });
+
+    await newAnsweredRecord.save();
+    res.status(201).json({ message: "Respuesta guardada con éxito", newAnsweredRecord });
+
+  } catch (error) {
+    console.error("Error al guardar la respuesta:", error);
+    res.status(500).json({ message: "Error al guardar la respuesta", error: error.message });
+  }
+});
+
+
 module.exports = router;
