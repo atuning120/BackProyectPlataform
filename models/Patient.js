@@ -9,7 +9,7 @@ const patientSchema = new mongoose.Schema(
     insurance: { type: String },
     address: { type: String },
     mobileNumber: { type: String },
-    email: { type: String },
+    email: { type: String, default: null },
   },
   { timestamps: true }
 );

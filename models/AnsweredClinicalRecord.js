@@ -4,24 +4,19 @@ const answeredClinicalRecordSchema = new mongoose.Schema(
   {
     clinicalRecordNumber: {
       type: Number,
-      required: true,
       ref: "ClinicalRecord",
     },
     email: {
       type: String,
-      required: true,
     },
     answer: {
       type: String,
-      required: true,
     },
     teacherEmail: {
       type: String,
-      required: false,
     },
     feedback: {
       type: String,
-      required: false,
     },
   },
   { timestamps: true }
