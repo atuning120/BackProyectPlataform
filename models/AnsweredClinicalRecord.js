@@ -10,7 +10,7 @@ const answeredClinicalRecordSchema = new mongoose.Schema(
       type: String,
     },
     answer: {
-      type: String,
+      type: Object,
     },
     teacherEmail: {
       type: String,

@@ -54,7 +54,7 @@ router.put("/:id", async (req, res) => {
     }
 });  
 
-  // Guardar una nueva respuesta de ficha clínica
+// Guardar una nueva respuesta de ficha clínica
 router.post("/", async (req, res) => {
   try {
     const { clinicalRecordNumber, email, answer } = req.body;
@@ -77,6 +77,5 @@ router.post("/", async (req, res) => {
     res.status(500).json({ message: "Error al guardar la respuesta", error: error.message });
   }
 });
-
 
 module.exports = router;
