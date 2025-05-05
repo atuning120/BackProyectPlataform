@@ -16,7 +16,11 @@ const answeredClinicalRecordSchema = new mongoose.Schema(
       type: String,
     },
     feedback: {
-      type: String,
+      type: mongoose.Schema.Types.Mixed,
+    },
+    formatId: {
+      type: Number, 
+      required: true,
     },
   },
   { timestamps: true }
