@@ -27,7 +27,7 @@ const sendFeedbackEmail = async (teacherEmail, studentEmail, feedback) => {
 
   const studentHtml = `
     <div style="font-family: Arial, sans-serif; color: #333;">
-      <h2>📄 Feedback Simulación AvisLatam</h2>
+      <h2>📄 Feedback FISIM</h2>
       <p><strong>Profesor:</strong> ${teacherEmail}</p>
       <p><strong>Estudiante:</strong> ${studentEmail}</p>
       <hr />
@@ -44,7 +44,7 @@ const sendFeedbackEmail = async (teacherEmail, studentEmail, feedback) => {
 
   const teacherHtml = `
     <div style="font-family: Arial, sans-serif; color: #333;">
-      <h2>📄 Feedback Simulación AvisLatam</h2>
+      <h2>📄 Feedback FISIM</h2>
       <p><strong>Profesor:</strong> ${teacherEmail}</p>
       <p><strong>Estudiante:</strong> ${studentEmail}</p>
       <hr />
