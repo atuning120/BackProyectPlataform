@@ -16,7 +16,7 @@ const formatKey = (key) =>
     .replace(/\b\w/g, (c) => c.toUpperCase());
 
 const sendFeedbackEmail = async (teacherEmail, studentEmail, feedback) => {
-  const subject = "📄 Feedback Simulación AvisLatam";
+  const subject = "📄 Feedback Simulación FISIM";
 
   const formattedFeedback =
     typeof feedback === "string"
