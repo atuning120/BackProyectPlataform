@@ -56,9 +56,10 @@ router.put("/:id", async (req, res) => {
 router.post("/", async (req, res) => {
   try {
     const { clinicalRecordNumber, email, answer, formatId, responseTime } = req.body;
+    console.log("BODY RECIBIDO:", req.body);
 
     if (!clinicalRecordNumber || !email || !answer || !formatId || !responseTime) {
-      return res.status(400).json({ message: "Faltan datos obligatorios (clinicalRecordNumber, email, answer, formatId, responseTime )" });
+      return res.status(400).json({ message: "Faltan datos obligatorios (clinicalRecordNumber, email, answer, formatId, responseTime)" });
     }
 
     const newAnsweredRecord = new AnsweredClinicalRecord({
@@ -75,6 +76,24 @@ router.post("/", async (req, res) => {
   } catch (error) {
     console.error("Error al guardar la respuesta:", error);
     res.status(500).json({ message: "Error al guardar la respuesta", error: error.message });
+  }
+});
+
+// Eliminar una respuesta por su ID
+router.delete("/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const deletedRecord = await AnsweredClinicalRecord.findByIdAndDelete(id);
+
+    if (!deletedRecord) {
+      return res.status(404).json({ message: "Respuesta no encontrada para eliminar" });
+    }
+
+    res.status(200).json({ message: "Respuesta eliminada exitosamente", deletedRecord });
+  } catch (error) {
+    console.error("Error al eliminar la respuesta:", error);
+    res.status(500).json({ message: "Error al eliminar la respuesta", error: error.message });
   }
 });
 
