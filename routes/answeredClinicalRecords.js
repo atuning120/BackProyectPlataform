@@ -55,10 +55,10 @@ router.put("/:id", async (req, res) => {
 // Guardar una nueva respuesta
 router.post("/", async (req, res) => {
   try {
-    const { clinicalRecordNumber, email, answer, formatId } = req.body;
+    const { clinicalRecordNumber, email, answer, formatId, responseTime } = req.body;
 
-    if (!clinicalRecordNumber || !email || !answer || !formatId) {
-      return res.status(400).json({ message: "Faltan datos obligatorios (clinicalRecordNumber, email, answer, formatId)" });
+    if (!clinicalRecordNumber || !email || !answer || !formatId || !responseTime) {
+      return res.status(400).json({ message: "Faltan datos obligatorios (clinicalRecordNumber, email, answer, formatId, responseTime )" });
     }
 
     const newAnsweredRecord = new AnsweredClinicalRecord({
@@ -66,6 +66,7 @@ router.post("/", async (req, res) => {
       email,
       answer,
       formatId,
+      responseTime,
     });
 
     await newAnsweredRecord.save();

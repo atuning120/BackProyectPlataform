@@ -22,6 +22,10 @@ const answeredClinicalRecordSchema = new mongoose.Schema(
       type: Number, 
       required: true,
     },
+    responseTime: { 
+      type: String, 
+      required: true, 
+    },
   },
   { timestamps: true }
 );
