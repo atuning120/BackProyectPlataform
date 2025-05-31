@@ -5,6 +5,7 @@ const { sendFeedbackEmail } = require("../services/emailService");
 
 const router = express.Router();
 
+
 // Obtener todas las respuestas
 router.get("/", async (req, res) => {
   try {
@@ -43,7 +44,8 @@ router.put("/:id", async (req, res) => {
     answeredRecord.teacherEmail = teacherEmail;
     await answeredRecord.save();
 
-    await sendFeedbackEmail(teacherEmail, answeredRecord.email, feedback);
+    // Asumiendo que quieres enviar email al estudiante sobre el feedback del profesor
+    // await sendFeedbackEmail(teacherEmail, answeredRecord.email, feedback);
 
     res.status(200).json(answeredRecord);
   } catch (err) {
@@ -52,21 +54,40 @@ router.put("/:id", async (req, res) => {
   }
 });
 
+
 // Guardar una nueva respuesta
 router.post("/", async (req, res) => {
   try {
-    const { clinicalRecordNumber, email, answer, formatId, responseTime } = req.body;
-    console.log("BODY RECIBIDO:", req.body);
-
-    if (!clinicalRecordNumber || !email || !answer || !formatId || !responseTime) {
-      return res.status(400).json({ message: "Faltan datos obligatorios (clinicalRecordNumber, email, answer, formatId, responseTime)" });
+    const { clinicalRecordNumber, email, answer, formatIds, responseTime } = req.body;
+    
+    // Validación de campos obligatorios
+    if (
+      !clinicalRecordNumber ||
+      !email ||
+      !answer ||
+      !formatIds || !Array.isArray(formatIds) || formatIds.length === 0 ||
+      !responseTime
+    ) {
+      return res.status(400).json({ message: "Faltan datos obligatorios o son incorrectos (clinicalRecordNumber, email, answer, formatIds, responseTime)" });
     }
+
+    // Validación de la estructura de 'answer'
+    if (typeof answer !== 'object' || answer === null || !answer.baseFields || !answer.formatSpecificAnswers) {
+        return res.status(400).json({ message: "La estructura de 'answer' es incorrecta. Debe contener 'baseFields' y 'formatSpecificAnswers'." });
+    }
+    // Validar que cada formatId en formatIds tenga una entrada en formatSpecificAnswers
+    for (const formatId of formatIds) {
+        if (!answer.formatSpecificAnswers.hasOwnProperty(formatId)) {
+            return res.status(400).json({ message: `Faltan respuestas específicas para el formatId ${formatId} en 'answer.formatSpecificAnswers'.`});
+        }
+    }
+
 
     const newAnsweredRecord = new AnsweredClinicalRecord({
       clinicalRecordNumber,
       email,
-      answer,
-      formatId,
+      answer, // Se guarda la nueva estructura de answer
+      formatIds, // Se guarda el array de IDs de formato
       responseTime,
     });
 
@@ -75,6 +96,9 @@ router.post("/", async (req, res) => {
 
   } catch (error) {
     console.error("Error al guardar la respuesta:", error);
+    if (error.name === 'ValidationError') {
+      return res.status(400).json({ message: "Error de validación", errors: error.errors });
+    }
     res.status(500).json({ message: "Error al guardar la respuesta", error: error.message });
   }
 });

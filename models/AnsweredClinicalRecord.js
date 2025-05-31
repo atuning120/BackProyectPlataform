@@ -9,8 +9,9 @@ const answeredClinicalRecordSchema = new mongoose.Schema(
     email: {
       type: String,
     },
-    answer: {
-      type: Object,
+    answer: { 
+      type: Object, 
+      required: true,
     },
     teacherEmail: {
       type: String,
@@ -18,13 +19,13 @@ const answeredClinicalRecordSchema = new mongoose.Schema(
     feedback: {
       type: mongoose.Schema.Types.Mixed,
     },
-    formatId: {
-      type: Number, 
+    formatIds: [{ // Cambiado de formatId a formatIds
+      type: Number,
       required: true,
-    },
-    responseTime: { 
-      type: String, 
-      required: true, 
+    }],
+    responseTime: {
+      type: String,
+      required: true,
     },
   },
   { timestamps: true }
