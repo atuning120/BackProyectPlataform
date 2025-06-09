@@ -43,9 +43,7 @@ router.put("/:id", async (req, res) => {
     answeredRecord.feedback = feedback;
     answeredRecord.teacherEmail = teacherEmail;
     await answeredRecord.save();
-
-    // Asumiendo que quieres enviar email al estudiante sobre el feedback del profesor
-    // await sendFeedbackEmail(teacherEmail, answeredRecord.email, feedback);
+    await sendFeedbackEmail(teacherEmail, answeredRecord.email, feedback);
 
     res.status(200).json(answeredRecord);
   } catch (err) {

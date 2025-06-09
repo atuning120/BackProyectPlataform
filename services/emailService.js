@@ -42,7 +42,7 @@ const sendFeedbackEmail = async (teacherEmail, studentEmail, feedback) => {
     </div>
   `;
 
-  const teacherHtml = `
+ /* const teacherHtml = `
     <div style="font-family: Arial, sans-serif; color: #333;">
       <h2>📄 Feedback FISIM</h2>
       <p><strong>Profesor:</strong> ${teacherEmail}</p>
@@ -58,6 +58,7 @@ const sendFeedbackEmail = async (teacherEmail, studentEmail, feedback) => {
       <p style="color: gray; font-size: 0.9em;">Este es un correo automático. Por favor, no respondas a este mensaje.</p>
     </div>
   `;
+  */
 
   await transporter.sendMail({
     from: process.env.EMAIL_USER,
@@ -66,12 +67,13 @@ const sendFeedbackEmail = async (teacherEmail, studentEmail, feedback) => {
     html: studentHtml,
   });
 
-  await transporter.sendMail({
+  /*await transporter.sendMail({
     from: process.env.EMAIL_USER,
     to: teacherEmail,
     subject,
     html: teacherHtml,
-  });
+  });*/
+
 };
 
 module.exports = { sendFeedbackEmail };
