@@ -31,7 +31,7 @@ router.get("/:email", async (req, res) => {
 
 // Actualizar retroalimentación
 router.put("/:id", async (req, res) => {
-  const { feedback, teacherEmail, clinicalRecordName} = req.body;
+  const { feedback, teacherEmail} = req.body;
   const { id } = req.params;
 
   try {
@@ -42,7 +42,7 @@ router.put("/:id", async (req, res) => {
 
     answeredRecord.feedback = feedback;
     answeredRecord.teacherEmail = teacherEmail;
-    answeredRecord.clinicalRecordName = clinicalRecordName;
+    //answeredRecord.clinicalRecordName = clinicalRecordName;
     await answeredRecord.save();
     await sendFeedbackEmail(teacherEmail, answeredRecord.email, feedback);
 
