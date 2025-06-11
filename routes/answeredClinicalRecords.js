@@ -31,7 +31,7 @@ router.get("/:email", async (req, res) => {
 
 // Actualizar retroalimentación
 router.put("/:id", async (req, res) => {
-  const { feedback, teacherEmail } = req.body;
+  const { feedback, teacherEmail, clinicalRecordName} = req.body;
   const { id } = req.params;
 
   try {
@@ -42,6 +42,7 @@ router.put("/:id", async (req, res) => {
 
     answeredRecord.feedback = feedback;
     answeredRecord.teacherEmail = teacherEmail;
+    answeredRecord.clinicalRecordName = clinicalRecordName;
     await answeredRecord.save();
     await sendFeedbackEmail(teacherEmail, answeredRecord.email, feedback);
 
@@ -56,11 +57,12 @@ router.put("/:id", async (req, res) => {
 // Guardar una nueva respuesta
 router.post("/", async (req, res) => {
   try {
-    const { clinicalRecordNumber, email, answer, formatIds, responseTime } = req.body;
+    const { clinicalRecordNumber, clinicalRecordName, email, answer, formatIds, responseTime } = req.body;
     
     // Validación de campos obligatorios
     if (
       !clinicalRecordNumber ||
+      !clinicalRecordName || 
       !email ||
       !answer ||
       !formatIds || !Array.isArray(formatIds) || formatIds.length === 0 ||
@@ -83,6 +85,7 @@ router.post("/", async (req, res) => {
 
     const newAnsweredRecord = new AnsweredClinicalRecord({
       clinicalRecordNumber,
+      clinicalRecordName,
       email,
       answer, // Se guarda la nueva estructura de answer
       formatIds, // Se guarda el array de IDs de formato

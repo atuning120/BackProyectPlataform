@@ -6,6 +6,10 @@ const answeredClinicalRecordSchema = new mongoose.Schema(
       type: Number,
       ref: "ClinicalRecord",
     },
+    clinicalRecordName:{
+      type: String,
+      required: true,
+    },
     email: {
       type: String,
     },
