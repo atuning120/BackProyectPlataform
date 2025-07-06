@@ -122,4 +122,28 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
+
+router.delete("/", async (req, res) => {
+  const { ids } = req.body; 
+  
+  if (!ids || !Array.isArray(ids) || ids.length === 0) {
+    return res.status(400).json({ message: "Se requiere un array de IDs en el cuerpo de la solicitud." });
+  }
+
+  try {
+    const result = await AnsweredClinicalRecord.deleteMany({
+      _id: { $in: ids } 
+    });
+
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ message: "No se encontraron respuestas con los IDs proporcionados." });
+    }
+
+    res.status(200).json({ message: `${result.deletedCount} respuestas han sido eliminadas exitosamente.` });
+  } catch (error) {
+    console.error("Error en la eliminación masiva de respuestas:", error);
+    res.status(500).json({ message: "Error al eliminar las respuestas", error: error.message });
+  }
+});
+
 module.exports = router;
