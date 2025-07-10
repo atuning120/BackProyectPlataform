@@ -7,7 +7,7 @@ Incluye soporte para despliegue con **Docker**.
 ## ⚙️ Ejemplo de `.env`
 
 - `MONGO_URI`: URL de conexión a la base de datos MongoDB
-- `PORT`: Puerto donde corre el servidor
+- `PORT`: 5000
 - `EMAIL_USER`: Usuario/correo para el servicio de email
 - `EMAIL_PASS`: Contraseña del servicio de email
 - `JWT_SECRET`: Secreto para firmar los JWT74
