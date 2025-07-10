@@ -21,7 +21,7 @@ router.post('/login', async (req, res) => {
     let role = 'alumno'; // Rol por defecto
 
     // ADMIN
-    if (email === 'vergamacarena@gmail.com') {
+    if (email === 'vergamacarena@gmail.com' || email === 'german.palacios@ucn.cl') {
       role = 'admin';
     }
     //  PROFESOR
