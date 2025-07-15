@@ -13,7 +13,7 @@ router.post('/login', async (req, res) => {
   if (!idToken) {
     return res.status(401).send('Se requiere token de autenticación.');
   }
-
+ 
   try {
     // Verificar el ID Token de Firebase usando el SDK de Admin
     const decodedToken = await admin.auth().verifyIdToken(idToken);
