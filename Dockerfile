@@ -1,20 +1,20 @@
-# backend/Dockerfile
-FROM node:20
+# Imagen base liviana
+FROM node:20-alpine
 
 # Establece el directorio de trabajo
 WORKDIR /app
 
-# Copia los archivos de dependencias
+# Copia solo los archivos de dependencias primero
 COPY package*.json ./
 
-# Instala las dependencias
-RUN npm install
+# Instala dependencias (solo producción si no necesitas devDependencies)
+RUN npm install --production
 
-# Copia el código fuente
+# Copia el resto del código
 COPY . .
 
 # Expone el puerto del backend
 EXPOSE 5000
 
-# Comando por defecto
+# Comando de inicio
 CMD ["npm", "start"]
