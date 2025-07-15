@@ -4,6 +4,8 @@ const jwt = require('jsonwebtoken');
 const admin = require('../config/firebaseAdmin');
 
 const JWT_SECRET = process.env.JWT_SECRET;
+const ADMIN_EMAILS = process.env.ADMIN_EMAILS?.split(',') || [];
+const TEACHER_EMAILS = process.env.TEACHER_EMAILS?.split(',') || [];
 
 router.post('/login', async (req, res) => {
   const { idToken } = req.body;
@@ -21,16 +23,11 @@ router.post('/login', async (req, res) => {
     let role = 'alumno'; // Rol por defecto
 
     // ADMIN
-    if (email === 'vergamacarena@gmail.com' || email === 'german.palacios@ucn.cl') {
+    if (ADMIN_EMAILS.includes(email)) {
       role = 'admin';
     }
     //  PROFESOR
-    else if (
-      [
-        'benjagilberto44@gmail.com',
-        'silasglauco@gmail.com',
-        'cristian.ignacio.nunez@gmail.com'
-      ].includes(email) ||
+    else if (TEACHER_EMAILS.includes(email) ||
       email.endsWith('@ucn.cl') ||
       email.endsWith('@ce.ucn.cl')
     ) {
