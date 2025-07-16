@@ -2,18 +2,35 @@ const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 const admin = require('../config/firebaseAdmin');
+const rateLimit = require('express-rate-limit');
 
 const JWT_SECRET = process.env.JWT_SECRET;
 const ADMIN_EMAILS = process.env.ADMIN_EMAILS?.split(',') || [];
 const TEACHER_EMAILS = process.env.TEACHER_EMAILS?.split(',') || [];
 
+//rate limiting para login
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutos
+  max: 5, // máximo 5 intentos por IP
+  message: {
+    error: 'Demasiados intentos de login. Intenta en 15 minutos.'
+  },
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+  skipSuccessfulRequests: true, // No contar requests exitosos
+});
+
 router.post('/login', async (req, res) => {
   const { idToken } = req.body;
 
-  if (!idToken) {
-    return res.status(401).send('Se requiere token de autenticación.');
+  if (!idToken || typeof idToken !== 'string' || idToken.trim() === '') {
+    return res.status(400).json({ error: 'Token de autenticación inválido.' });
   }
- 
+
+  if (idToken.length > 2048) {
+    return res.status(400).json({ error: 'Token demasiado largo.' });
+  }
+
   try {
     // Verificar el ID Token de Firebase usando el SDK de Admin
     const decodedToken = await admin.auth().verifyIdToken(idToken);
@@ -53,6 +70,7 @@ router.post('/login', async (req, res) => {
     res.json({ token: appToken });
 
   } catch (error) {
+    console.error('Error en autenticación:', error.message);
     res.status(403).send('Acceso solo para correos institucionales de alumnos UCN.');
   }
 });
