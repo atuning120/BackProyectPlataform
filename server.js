@@ -28,10 +28,10 @@ app.use(cors({
 
 // Rate limiting global
 const globalLimiter = rateLimit({
-  windowMs: 1 * 60 * 1000, // 15 minutos
-  max: 5, // 100 requests por IP
+  windowMs: 10 * 60 * 1000, // 15 minutos
+  max: 100, // 100 requests por IP
   message: {
-    error: 'Demasiadas peticiones desde esta IP. Intenta más tarde. (ACTUALIZAO)'
+    error: 'Demasiadas peticiones desde esta IP. Intenta más tarde.'
   },
   standardHeaders: true,
   legacyHeaders: false,
