@@ -7,8 +7,8 @@ WORKDIR /app
 # Copia solo los archivos de dependencias primero
 COPY package*.json ./
 
-# Instala dependencias (solo producción si no necesitas devDependencies)
-RUN npm install --production
+# Solo dependencias de producción + limpia cache
+RUN npm ci --only=production && npm cache clean --force
 
 # Copia el resto del código
 COPY . .
