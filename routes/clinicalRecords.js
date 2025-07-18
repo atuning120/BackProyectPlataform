@@ -1,7 +1,7 @@
 const express = require("express");
 const Patient = require("../models/Patient");
 const ClinicalRecord = require("../models/ClinicalRecord");
-const AnsweredClinicalRecord = require("../models/AnsweredClinicalRecord")
+const AnsweredClinicalRecord = require("../models/AnsweredClinicalRecord");
 const router = express.Router();
 
 // Obtener todas las fichas clínicas
@@ -11,7 +11,7 @@ router.get("/", async (req, res) => {
     res.status(200).json(clinicalRecords);
   } catch (error) {
     console.error("Error al obtener las fichas clínicas:", error);
-    res.status(500).json({ message: "Error al obtener las fichas clínicas." });
+    res.status(500).json({ message: "Error al obtener las fichas clínicas.", error: error.message });
   }
 });
 
@@ -58,18 +58,51 @@ router.post("/", async (req, res) => {
   }
 });
 
-// Eliminar una ficha clínica
+// Eliminar múltiples fichas clínicas (Ruta para eliminación en lote)
+router.delete("/", async (req, res) => {
+  const { ids } = req.body;
+
+  if (!ids || !Array.isArray(ids) || ids.length === 0) {
+    return res.status(400).json({ message: "Se requiere un array de IDs en el cuerpo de la solicitud." });
+  }
+
+  try {
+    const recordsToDelete = await ClinicalRecord.find({ _id: { $in: ids } }).select('clinicalRecordNumber');
+    if (recordsToDelete.length === 0) {
+      return res.status(404).json({ message: "No se encontraron fichas clínicas con los IDs proporcionados." });
+    }
+
+    const recordNumbers = recordsToDelete.map(r => r.clinicalRecordNumber);
+    const associatedAnswers = await AnsweredClinicalRecord.find({ clinicalRecordNumber: { $in: recordNumbers } });
+
+    if (associatedAnswers.length > 0) {
+      return res.status(400).json({ message: `No se pueden eliminar porque ${associatedAnswers.length} ficha(s) tienen respuestas asociadas.` });
+    }
+
+    const result = await ClinicalRecord.deleteMany({ _id: { $in: ids } });
+
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ message: "No se eliminó ninguna ficha, puede que ya hayan sido eliminadas." });
+    }
+
+    res.status(200).json({ message: `${result.deletedCount} fichas clínicas han sido eliminadas exitosamente.` });
+  } catch (error) {
+    console.error("Error en la eliminación masiva de fichas clínicas:", error);
+    res.status(500).json({ message: "Error al eliminar las fichas clínicas", error: error.message });
+  }
+});
+
+// Eliminar una ficha clínica por su ID (Ruta individual)
 router.delete("/:id", async (req, res) => {
   try {
     const { id } = req.params;
 
-    // Verificar si la ficha clínica tiene respuestas asociadas
-    const clinicalRecord = await ClinicalRecord.findById(id); // Buscar la ficha clínica por su _id
+    const clinicalRecord = await ClinicalRecord.findById(id);
     if (!clinicalRecord) {
       return res.status(404).json({ message: "Ficha clínica no encontrada." });
     }
 
-    const answeredRecords = await AnsweredClinicalRecord.find({ clinicalRecordNumber: clinicalRecord.clinicalRecordNumber }); // Buscar las respuestas asociadas usando 'clinicalRecordNumber'
+    const answeredRecords = await AnsweredClinicalRecord.find({ clinicalRecordNumber: clinicalRecord.clinicalRecordNumber });
     if (answeredRecords.length > 0) {
       return res.status(400).json({ message: "No se puede eliminar la ficha clínica porque tiene respuestas asociadas." });
     }
@@ -80,8 +113,8 @@ router.delete("/:id", async (req, res) => {
     }
     res.status(200).json({ message: "Ficha clínica eliminada exitosamente." });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Error eliminando la ficha clínica." });
+    console.error("Error eliminando la ficha clínica:", err);
+    res.status(500).json({ message: "Error eliminando la ficha clínica.", error: err.message });
   }
 });
 
