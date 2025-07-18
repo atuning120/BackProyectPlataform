@@ -9,7 +9,7 @@ const morgan = require("morgan");
 const authRoutes = require("./routes/auth");
 
 const app = express();
-
+app.set('trust proxy', 1);
 // ===== MIDDLEWARE DE SEGURIDAD GLOBAL =====
 
 // Helmet para seguridad general
