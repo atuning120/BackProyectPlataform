@@ -76,7 +76,7 @@ router.delete("/", async (req, res) => {
     const associatedAnswers = await AnsweredClinicalRecord.find({ clinicalRecordNumber: { $in: recordNumbers } });
 
     if (associatedAnswers.length > 0) {
-      return res.status(400).json({ message: `No se pueden eliminar porque ${associatedAnswers.length} ficha(s) tienen respuestas asociadas.` });
+      return res.status(400).json({ message: `No se pueden eliminar porque ficha(s) tienen respuestas asociadas.` });
     }
 
     const result = await ClinicalRecord.deleteMany({ _id: { $in: ids } });

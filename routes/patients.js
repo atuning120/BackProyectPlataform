@@ -61,7 +61,7 @@ router.delete("/", async (req, res) => {
     const associatedRecords = await ClinicalRecord.find({ patientRun: { $in: patientRuns } });
 
     if (associatedRecords.length > 0) {
-      return res.status(400).json({ message: `No se pueden eliminar porque ${associatedRecords.length} paciente(s) tienen fichas clínicas asociadas.` });
+      return res.status(400).json({ message: `No se pueden eliminar porque  paciente(s) tienen fichas clínicas asociadas.` });
     }
 
     const result = await Patient.deleteMany({ _id: { $in: ids } });
